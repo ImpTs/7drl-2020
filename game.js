@@ -5,7 +5,9 @@ var Game = {
     player: null,
     pedro: null,
     ananas: null,
-    tileSet: function() {
+
+
+    init: function () {
         var options = {
             layout: "tile",
             bg: "transparent",
@@ -13,19 +15,17 @@ var Game = {
             tileHeight: 8,
             tileSet: tileSet,
             tileMap: {
-                "@": [7, 7],
-                "#": [0, 1],
-                "P": [8, 2],
-                "*": [4, 7]
+                "@": [56, 56],
+                ".": [16, 16],
+                "P": [72, 16],
+                "*": [40, 64],
+                "": [0, 0],
             },
-            width: 3,
-            height: 3
+            width: 80,
+            height: 40
         }
-        var tileSet = document.createElement("img");
-        tileSet.src = "./tiles/tiles.png";
-    },
 
-    init: function () {
+        console.log("tileset loaded")
         this.display = new ROT.Display(options);
         document.body.appendChild(this.display.getContainer());
 
@@ -152,8 +152,8 @@ Player.prototype.handleEvent = function (e) {
 }
 
 Player.prototype._draw = function () {
-    Game.display.draw(this._x, this._y, "@", "#ff0");
-    Game.display.drawText(2, 1, "hello worldd dd!!!")
+    Game.display.draw(this._x, this._y, "@");
+    Game.display.drawText(2, 1, "")
 }
 
 Player.prototype._checkBox = function () {
@@ -213,38 +213,9 @@ Pedro.prototype.act = function () {
 Pedro.prototype._draw = function () {
     Game.display.draw(this._x, this._y, "P", "red");
 }
-
 var tileSet = document.createElement("img");
 tileSet.src = "./tiles/tiles.png";
 
-var options = {
-    layout: "tile",
-    bg: "transparent",
-    tileWidth: 8,
-    tileHeight: 8,
-    tileSet: tileSet,
-    tileMap: {
-        "@": [7, 7],
-        "#": [0, 1],
-        "P": [8, 2],
-        "*": [4, 7]
-    },
-    width: 3,
-    height: 3
-}
-
-var display = new ROT.Display(options);
-/*tileSet.onload = function() {
-    display.draw(1, 1, "@");
-    display.draw(0, 0, "#");
-    display.draw(0, 1, "#");
-    display.draw(1, 0, "#");
-    display.draw(0, 2, "#");
-    display.draw(2, 2, "a");
-    display.draw(2, 0, "!");
-    display.draw(2, 1, "!");
-}; */
-
-if(document.readyState === 'complete') {
-Game.init();
+tileSet.onload = function () {
+    Game.init();
 }
