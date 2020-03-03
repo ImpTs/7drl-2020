@@ -17,12 +17,12 @@ var Game = {
             tileMap: {
                 "@": [56, 56],
                 ".": [16, 16],
-                "P": [72, 16],
+                "P": [24,72],
                 "*": [40, 64],
-                "": [0, 0],
+                "0": [0, 0]
             },
-            width: 80,
-            height: 40
+            width: 90,
+            height: 35,
         }
 
         console.log("tileset loaded")
@@ -47,13 +47,12 @@ var Game = {
             if (value) {
                 return;
             }
-
             var key = x + "," + y;
             this.map[key] = ".";
             freeCells.push(key);
         }
         digger.create(digCallback.bind(this));
-
+        
         this._generateBoxes(freeCells);
         this._drawWholeMap();
 
@@ -74,7 +73,7 @@ var Game = {
         for (var i = 2; i < 12; i++) {
             var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
             var key = freeCells.splice(index, 1)[0];
-            this.map[key] = "*";
+            this.map[key] = [".","*"];
             if (!i) {
                 this.ananas = key;
             } /* first box contains an ananas */
@@ -98,7 +97,7 @@ var Player = function (x, y) {
 }
 
 Player.prototype.getSpeed = function () {
-    return 200;
+    return 100;
 }
 Player.prototype.getX = function () {
     return this._x;
@@ -152,13 +151,14 @@ Player.prototype.handleEvent = function (e) {
 }
 
 Player.prototype._draw = function () {
-    Game.display.draw(this._x, this._y, "@");
+    Game.display.draw(this._x, this._y, backgroundGet(this._x, this._y, "@"));
     Game.display.drawText(2, 1, "")
 }
 
 Player.prototype._checkBox = function () {
     var key = this._x + "," + this._y;
-    if (Game.map[key] != "*") {
+    if (Game.map[key][1] != "*") {
+        console.log(Game.map[key])
         alert("There is no box here!");
     } else if (key == Game.ananas) {
         alert("Hooray! You found a banana and won this game.");
@@ -211,11 +211,19 @@ Pedro.prototype.act = function () {
 }
 
 Pedro.prototype._draw = function () {
-    Game.display.draw(this._x, this._y, "P", "red");
+    Game.display.draw(this._x, this._y, backgroundGet(this._x, this._y, "P"));
 }
 var tileSet = document.createElement("img");
 tileSet.src = "./tiles/tiles.png";
 
-tileSet.onload = function () {
-    Game.init();
-}
+
+
+function backgroundGet(x,y, string){
+    key = this.x + "," + this.y;
+    if (Game.map[key] == ".") {
+        return [",", string]
+    }
+    else {
+        return string;
+    };
+};
