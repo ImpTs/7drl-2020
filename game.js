@@ -22,7 +22,7 @@ var Game = {
                 "0": [0, 0]
             },
             width: 90,
-            height: 35,
+            height: 35, 
         }
 
         console.log("tileset loaded")
@@ -73,6 +73,7 @@ var Game = {
         for (var i = 2; i < 12; i++) {
             var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
             var key = freeCells.splice(index, 1)[0];
+
             this.map[key] = [".","*"];
             if (!i) {
                 this.ananas = key;
@@ -154,7 +155,6 @@ Player.prototype._draw = function () {
     Game.display.draw(this._x, this._y, backgroundGet(this._x, this._y, "@"));
     Game.display.drawText(2, 1, "")
 }
-
 Player.prototype._checkBox = function () {
     var key = this._x + "," + this._y;
     if (Game.map[key][1] != "*") {
@@ -166,6 +166,26 @@ Player.prototype._checkBox = function () {
         window.removeEventListener("keydown", this);
     } else {
         alert("This box is empty :-(");
+    }
+}
+Player.prototype._getItem = function() {
+    var key = this._x + "," + this._y;
+    if(Game.map[key][1] ==
+}
+class Inventory {
+    constructor(items =[]){
+        this.items = items;
+    }
+    addItems(items) {
+        this.items.concat(items);
+        return this.items;
+    }
+    dropItem(itemName){
+        let newInventory = this.items.filter(function(item) {
+            return item.name !== itemName;
+        });
+        this.items = newInventory;
+        return this.items;
     }
 }
 
@@ -215,8 +235,33 @@ Pedro.prototype._draw = function () {
 }
 var tileSet = document.createElement("img");
 tileSet.src = "./tiles/tiles.png";
+class Item {
+    constructor(holdable) {
+    this._wielded = false;
+    this.worn = false;
+    this._quaff = false;
+    constructor(weapon) {
+        this._wielded = true;
+    }
+    constructor(armor) {
+        this._worn = true;
+    }
+    constructor(potion) {
+        this._quaff = true;
+    }
+}
+
+}
 
 
+class Item {
+    constructor(name, weight) {
+        this.name = name
+        this.weight = weight
+        }
+        pickUp(character) 
+        character.inventory.add
+}
 
 function backgroundGet(x,y, string){
     key = this.x + "," + this.y;
