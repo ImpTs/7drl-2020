@@ -175,7 +175,7 @@ Player.prototype._getItem = function() {
 class Inventory {
     constructor(items =[]){
         this.items = items;
-    }
+    };
     addItems(items) {
         this.items.concat(items);
         return this.items;
@@ -186,6 +186,10 @@ class Inventory {
         });
         this.items = newInventory;
         return this.items;
+    }
+    display() {
+        list = Inventory.items.join(", ");
+        Game.display.drawText(2, 1, )
     }
 }
 
