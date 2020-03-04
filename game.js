@@ -171,15 +171,15 @@ Player.prototype._checkBox = function () {
 Player.prototype._getItem = function() {
     var key = this._x + "," + this._y;
     if(Game.map[key][1] == "*") {
-        return true // TODO: make a thing
+        Inventory.addItem(Game.map[key][1])
     }
 }
 class Inventory {
-    constructor(items =[]){
+    constructor(items = []){
         this.items = items;
     };
-    addItems(items) {
-        this.items.concat(items);
+    addItem(item) {
+        this.items.concat(item);
         return this.items;
     }
     dropItem(itemName){
@@ -244,14 +244,18 @@ tileSet.src = "./tiles/tiles.png";
 
 
 
- /*class Item {
-    constructor(name, weight) {
-        this.name = name
-        this.weight = weight
+ class Item {
+    constructor(x,y, name, tile, type) {
+        this.name = name;
+        this.tile = tile;
+        this.type = type;
+        this._x =  x;
+        this._y = y;
         }
-        pickUp(character) 
-        Character.inventory.add;
-} */
+        pickUp(Player) {
+
+        }
+} 
 
 function backgroundGet(x,y, string){
     key = this.x + "," + this.y;
