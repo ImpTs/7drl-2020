@@ -170,7 +170,9 @@ Player.prototype._checkBox = function () {
 }
 Player.prototype._getItem = function() {
     var key = this._x + "," + this._y;
-    if(Game.map[key][1] ==
+    if(Game.map[key][1] == "*") {
+        return true // TODO: make a thing
+    }
 }
 class Inventory {
     constructor(items =[]){
@@ -239,33 +241,17 @@ Pedro.prototype._draw = function () {
 }
 var tileSet = document.createElement("img");
 tileSet.src = "./tiles/tiles.png";
-class Item {
-    constructor(holdable) {
-    this._wielded = false;
-    this.worn = false;
-    this._quaff = false;
-    constructor(weapon) {
-        this._wielded = true;
-    }
-    constructor(armor) {
-        this._worn = true;
-    }
-    constructor(potion) {
-        this._quaff = true;
-    }
-}
-
-}
 
 
-class Item {
+
+ /*class Item {
     constructor(name, weight) {
         this.name = name
         this.weight = weight
         }
         pickUp(character) 
-        character.inventory.add
-}
+        Character.inventory.add;
+} */
 
 function backgroundGet(x,y, string){
     key = this.x + "," + this.y;
