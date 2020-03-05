@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 var Game = {
     display: null,
     map: {},
@@ -23,9 +24,9 @@ var Game = {
             },
             width: 90,
             height: 35,
-        }
+        };
 
-        console.log("tileset loaded")
+        console.log("tileset loaded");
         this.display = new ROT.Display(options);
         document.body.appendChild(this.display.getContainer());
 
@@ -50,7 +51,7 @@ var Game = {
             var key = x + "," + y;
             this.map[key] = ".";
             freeCells.push(key);
-        }
+        };
         digger.create(digCallback.bind(this));
 
         this._generateBoxes(freeCells); //creates the items.
@@ -71,27 +72,34 @@ var Game = {
     },
 
     _generateBoxes: function (freeCells) {
+        console.log('the map keys generated are:')
         for (var i = 2; i < 12; i++) {
+            
             var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
             var key = freeCells.splice(index, 1)[0];
-
             this.map[key] = [".", "*"];
-            let roll = ROT.RNG.getPercentage()
+            let address = map[key].split(",");
+            let roll = ROT.RNG.getPercentage();
+            console.log(`${key}`)
             if (roll < 25) {
-                new Item(key[0], key[1], "sword", "weapon")
-
+                let loot = new Item(address[0], address[1], "sword", "weapon");
+                loot.announce();
+                itemArray.push(loot);
             }
             if (roll >= 25 && roll < 50) {
-                new Item(key[0], key[1], "leather armor", "armor")
-
+                let loot = new Item(address[0], address[1], "leather armor", "armor");
+                loot.announce();
+                itemArray.push(loot);
             }
             if (roll >= 50 && roll < 75) {
-                new Item(key[0], key[1], "health potion", "potion")
-
+                let loot = new Item(address[0], address[1], "health potion", "potion");
+                loot.announce();
+                itemArray.push(loot);
             }
             if (roll >= 75) {
-                new Item(key[0], key[1], "rock", "rock")
-
+                let loot = new Item(address[0], address[1], "rock", "rock");
+                loot.announce();
+                itemArray.push(loot);
             }
 
         }
@@ -107,6 +115,7 @@ var Game = {
     }
 };
 
+var itemArray = [];
 var Player = function (x, y) {
     this._x = x;
     this._y = y;
@@ -131,6 +140,7 @@ Player.prototype.act = function () {
 Player.prototype.handleEvent = function (e) {
     var code = e.keyCode;
     if (code == 13 || code == 32) {
+        console.log('getting item')
         this._getItem();
         return;
     }
@@ -188,15 +198,22 @@ Player.prototype._checkBox = function () {
 }
 Player.prototype._getItem = function () {
     var key = this._x + "," + this._y;
+    console.log(`my coordinates are ${this._x} and ${this._y}`)
     if (Game.map[key][1] == "*") {
-        Inventory.addItem(Game.map[key][1])
-        console.log("you picked up the" + Game.map[key][1])
+        console.log('calling for item')
+        for (item of itemArray) 
+        console.log("checking for item...")
+        if (item._x == this._x && item._y == this._y) {
+            console.log(`${item.name} found!`)
+        playerInv.addItem(item);
+        console.log("you picked up the " + item.name)
+    }
     }
 }
 class Inventory {
     constructor(items = []) {
         this.items = items;
-    };
+    }
     addItem(item) {
         this.items.concat(item);
         return this.items;
@@ -210,7 +227,7 @@ class Inventory {
     }
     display() {
         list = Inventory.items.join(", ");
-        Game.display.drawText(2, 1, )
+        Game.display.drawText(2, 1 );
     }
 }
 
@@ -274,7 +291,11 @@ class Item {
     pickUp(Player) {
 
     }
+    announce() {
+        console.log(`${this.name} spawned at ${this._x}, ${this._y} coordinates. It is a ${this.type}`)
+    }
 }
+var playerInv = new Inventory([]);
 
 class Sword extends Item {
     constructor(x, y, name, type) {
@@ -302,5 +323,5 @@ function backgroundGet(x, y, string) {
         return [",", string]
     } else {
         return string;
-    };
-};
+    }
+}
