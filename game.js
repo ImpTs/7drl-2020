@@ -17,12 +17,12 @@ var Game = {
             tileMap: {
                 "@": [56, 56],
                 ".": [16, 16],
-                "P": [24,72],
+                "P": [24, 72],
                 "*": [40, 64],
                 "0": [0, 0]
             },
             width: 90,
-            height: 35, 
+            height: 35,
         }
 
         console.log("tileset loaded")
@@ -52,7 +52,7 @@ var Game = {
             freeCells.push(key);
         }
         digger.create(digCallback.bind(this));
-        
+
         this._generateBoxes(freeCells);
         this._drawWholeMap();
 
@@ -74,10 +74,25 @@ var Game = {
             var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
             var key = freeCells.splice(index, 1)[0];
 
-            this.map[key] = [".","*"];
-            if (!i) {
-                this.ananas = key;
-            } /* first box contains an ananas */
+            this.map[key] = [".", "*"];
+            let roll = ROT.RNG.getPercentage()
+            if (roll < 25) {
+                new Item(key[0], key[1], "sword", "weapon")
+
+            }
+            if (roll >= 25 && roll < 50) {
+                new Item(key[0], key[1], "leather armor", "armor")
+
+            }
+            if (roll >= 50 && roll < 75) {
+                new Item(key[0], key[1], "health potion", "potion")
+
+            }
+            if (roll >= 75) {
+                new Item(key[0], key[1], "nothing", "rock")
+
+            }
+
         }
     },
 
@@ -115,7 +130,7 @@ Player.prototype.act = function () {
 Player.prototype.handleEvent = function (e) {
     var code = e.keyCode;
     if (code == 13 || code == 32) {
-        this._checkBox();
+        this._getItem();
         return;
     }
 
@@ -168,22 +183,23 @@ Player.prototype._checkBox = function () {
         alert("This box is empty :-(");
     }
 }
-Player.prototype._getItem = function() {
+Player.prototype._getItem = function () {
     var key = this._x + "," + this._y;
-    if(Game.map[key][1] == "*") {
+    if (Game.map[key][1] == "*") {
         Inventory.addItem(Game.map[key][1])
+        console.log("you picked up the" + Game.map[key][1])
     }
 }
 class Inventory {
-    constructor(items = []){
+    constructor(items = []) {
         this.items = items;
     };
     addItem(item) {
         this.items.concat(item);
         return this.items;
     }
-    dropItem(itemName){
-        let newInventory = this.items.filter(function(item) {
+    dropItem(itemName) {
+        let newInventory = this.items.filter(function (item) {
             return item.name !== itemName;
         });
         this.items = newInventory;
@@ -244,25 +260,24 @@ tileSet.src = "./tiles/tiles.png";
 
 
 
- class Item {
-    constructor(x,y, name, tile, type) {
+class Item {
+    constructor(x, y, name, type) {
         this.name = name;
-        this.tile = tile;
         this.type = type;
-        this._x =  x;
+        this._x = x;
         this._y = y;
-        }
-        pickUp(Player) {
+    }
+    
+    pickUp(Player) {
 
-        }
-} 
+    }
+}
 
-function backgroundGet(x,y, string){
+function backgroundGet(x, y, string) {
     key = this.x + "," + this.y;
     if (Game.map[key] == ".") {
         return [",", string]
-    }
-    else {
+    } else {
         return string;
     };
 };
