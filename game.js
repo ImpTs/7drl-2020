@@ -267,9 +267,29 @@ class Item {
         this._x = x;
         this._y = y;
     }
-    
+
     pickUp(Player) {
 
+    }
+}
+
+class Sword extends Item {
+    constructor(x, y, name, type) {
+        super(x, y, name, type)
+        this.damageModifier = 3;
+    }
+}
+
+class leatherArmor extends Item {
+    constructor(x, y, name, type) {
+        super(x, y, name, type)
+        this.protection = 3;
+    }
+}
+class healthPotion extends Item {
+    constructor(x, y, name, type) {
+        super(x, y, name, type)
+        this.healing = 7;
     }
 }
 
