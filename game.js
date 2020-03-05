@@ -78,7 +78,7 @@ var Game = {
             var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
             var key = freeCells.splice(index, 1)[0];
             this.map[key] = [".", "*"];
-            let address = map[key].split(",");
+            let address = key.toString().split(",");
             let roll = ROT.RNG.getPercentage();
             console.log(`${key}`)
             if (roll < 25) {
@@ -201,12 +201,18 @@ Player.prototype._getItem = function () {
     console.log(`my coordinates are ${this._x} and ${this._y}`)
     if (Game.map[key][1] == "*") {
         console.log('calling for item')
-        for (item of itemArray) 
+        for (const item of itemArray) { 
         console.log("checking for item...")
         if (item._x == this._x && item._y == this._y) {
             console.log(`${item.name} found!`)
         playerInv.addItem(item);
         console.log("you picked up the " + item.name)
+        console.log(`removing item from array\n
+        ${itemArray.length}`)
+        itemArray = itemArray.filter(x => x !== item)
+        console.log(`removed item from array\n
+        ${itemArray.length}`)
+        }
     }
     }
 }
