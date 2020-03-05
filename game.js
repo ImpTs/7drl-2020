@@ -31,7 +31,7 @@ var Game = {
 
         this._generateMap();
 
-        var scheduler = new ROT.Scheduler.Simple();
+        var scheduler = new ROT.Scheduler.Simple(); //this is just a fancy async/await engine that handles events for me.
         scheduler.add(this.player, true);
         scheduler.add(this.pedro, true);
 
@@ -40,7 +40,7 @@ var Game = {
     },
 
     _generateMap: function () {
-        var digger = new ROT.Map.Digger();
+        var digger = new ROT.Map.Digger(); // creates a NetHack-like dungeon layout.
         var freeCells = [];
 
         var digCallback = function (x, y, value) {
@@ -53,11 +53,12 @@ var Game = {
         }
         digger.create(digCallback.bind(this));
 
-        this._generateBoxes(freeCells);
+        this._generateBoxes(freeCells); //creates the items.
         this._drawWholeMap();
 
         this.player = this._createBeing(Player, freeCells);
-        this.pedro = this._createBeing(Pedro, freeCells);
+        this.pedro = this._createBeing(Pedro, freeCells); //TODO: make this spawn 4 - 10 monsters.
+    //this is as simple as looping but I have to make a monster first.
     },
 
     _createBeing: function (what, freeCells) {
@@ -89,7 +90,7 @@ var Game = {
 
             }
             if (roll >= 75) {
-                new Item(key[0], key[1], "nothing", "rock")
+                new Item(key[0], key[1], "rock", "rock")
 
             }
 
@@ -157,6 +158,8 @@ Player.prototype.handleEvent = function (e) {
     if (!(newKey in Game.map)) {
         return;
     }
+
+    // TODO: add attack logic. (if enemy on cell, do attack.)
 
     Game.display.draw(this._x, this._y, Game.map[this._x + "," + this._y]);
     this._x = newX;
