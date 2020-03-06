@@ -10,23 +10,11 @@ var Game = {
 
     init: function () {
         var options = {
-            layout: "tile",
-            bg: "transparent",
-            tileWidth: 8,
-            tileHeight: 8,
-            tileSet: tileSet,
-            tileMap: {
-                "@": [56, 56],
-                ".": [16, 16],
-                "P": [24, 72],
-                "*": [40, 64],
-                "0": [0, 0]
-            },
-            width: 90,
-            height: 35,
+            bg: "#000",
+            fontSize:'18',
+            spacing: 1.1,
         };
 
-        console.log("tileset loaded");
         this.display = new ROT.Display(options);
         document.body.appendChild(this.display.getContainer());
 
@@ -180,13 +168,13 @@ Player.prototype.handleEvent = function (e) {
 }
 
 Player.prototype._draw = function () {
-    Game.display.draw(this._x, this._y, backgroundGet(this._x, this._y, "@"));
+    Game.display.draw(this._x, this._y, "@", "#ff0");
     Game.display.drawText(2, 1, "")
 }
 Player.prototype._checkBox = function () {
     var key = this._x + "," + this._y;
     if (Game.map[key][1] != "*") {
-        console.log(Game.map[key])
+        console.log(Game.map[key]);
         alert("There is no box here!");
     } else if (key == Game.ananas) {
         alert("Hooray! You found a banana and won this game.");
@@ -195,23 +183,23 @@ Player.prototype._checkBox = function () {
     } else {
         alert("This box is empty :-(");
     }
-}
+};
 Player.prototype._getItem = function () {
     var key = this._x + "," + this._y;
     console.log(`my coordinates are ${this._x} and ${this._y}`)
     if (Game.map[key][1] == "*") {
-        console.log('calling for item')
+        console.log('calling for item');
         for (const item of itemArray) { 
-        console.log("checking for item...")
+        console.log("checking for item...");
         if (item._x == this._x && item._y == this._y) {
-            console.log(`${item.name} found!`)
+            console.log(`${item.name} found!`);
         playerInv.addItem(item);
-        console.log("you picked up the " + item.name)
+        console.log("you picked up the " + item.name);
         console.log(`removing item from array\n
-        ${itemArray.length}`)
-        itemArray = itemArray.filter(x => x !== item)
+        ${itemArray.length}`);
+        itemArray = itemArray.filter(x => x !== item);
         console.log(`removed item from array\n
-        ${itemArray.length}`)
+        ${itemArray.length}`);
         }
     }
     }
@@ -279,12 +267,8 @@ Pedro.prototype.act = function () {
 }
 
 Pedro.prototype._draw = function () {
-    Game.display.draw(this._x, this._y, backgroundGet(this._x, this._y, "P"));
+    Game.display.draw(this._x, this._y, "P", "red");
 }
-var tileSet = document.createElement("img");
-tileSet.src = "./tiles/tiles.png";
-
-
 
 class Item {
     constructor(x, y, name, type) {
@@ -323,11 +307,13 @@ class healthPotion extends Item {
     }
 }
 
-function backgroundGet(x, y, string) {
+ /*function backgroundGet(x, y, string) {
     key = this.x + "," + this.y;
     if (Game.map[key] == ".") {
         return [",", string]
     } else {
         return string;
     }
-}
+} */
+
+Game.init();
