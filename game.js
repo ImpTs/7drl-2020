@@ -48,7 +48,7 @@ var Game = {
 
         this._generateBoxes(freeCells); //creates the items.
 
-        this._drawWholeMap();
+        //this._drawWholeMap();
 
         this.player = this._createBeing(Player, freeCells);
         this.pedro = this._createBeing(Pedro, freeCells); //TODO: make this spawn 4 - 10 monsters.
@@ -102,7 +102,7 @@ var Game = {
             var parts = key.split(",");
             var x = parseInt(parts[0]);
             var y = parseInt(parts[1]);
-            this.display.draw(x, y, this.map[key]);
+            this.display.draw(x, y, "");
         }
     },
 
