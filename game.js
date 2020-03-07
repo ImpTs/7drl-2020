@@ -89,7 +89,6 @@ var Game = {
                 loot.announce();
                 itemArray.push(loot);
             }
-
         }
     },
 
@@ -110,7 +109,7 @@ var Player = function (x, y) {
     this._draw();
 }
 
-Player.prototype.getSpeed = function () {
+    Player.prototype.getSpeed = function () {
     return 100;
 }
 Player.prototype.getX = function () {
@@ -307,7 +306,7 @@ class healthPotion extends Item {
     }
 }
 
- /*function backgroundGet(x, y, string) {
+/*function backgroundGet(x, y, string) {
     key = this.x + "," + this.y;
     if (Game.map[key] == ".") {
         return [",", string]
