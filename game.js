@@ -165,9 +165,10 @@ Player.prototype.handleEvent = function (e) {
 
     // TODO: add attack logic. (if enemy on cell, do attack.)
 
-    Game.display.draw(this._x, this._y, Game.map[this._x + "," + this._y]);
+    Game.display.draw(this._x, this._y, Game.map[this._x + "," + this._y], "#fff", "#000");
     this._x = newX;
     this._y = newY;
+    Game._drawWholeMap();
     this._draw();
     window.removeEventListener("keydown", this);
     Game.engine.unlock();
@@ -182,12 +183,13 @@ Player.prototype._draw = function () {
         return false;
     }
     var fov =  new ROT.FOV.PreciseShadowcasting(lightPasses);
-    console.log("fov = " +fov);
-    var lightLevel = 3;
+    var lightLevel = 2;
     fov.compute(this._x, this._y, lightLevel, function(x, y, r, visibility) {
-        var ch = (r ? "." : "@");
-        var color = (Game.data[x+","+y] ? "#aa0": "#660");
+        var key = x+","+y;
+        var ch = (r ? Game.map[key] : "@");
+        var color = (Game.data[x+","+y] ? "#556": "#aa0");
         console.log("b game map is " + Game.data[x+","+y]);
+        //TODO: hold floor tiles and show them here
         Game.display.draw(x, y, ch, "#fff", color);
     });
 };
