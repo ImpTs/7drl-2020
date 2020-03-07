@@ -6,7 +6,7 @@ var Game = {
     player: null,
     pedro: null,
     ananas: null,
-
+    data: {},
 
     init: function () {
         var options = {
@@ -16,8 +16,9 @@ var Game = {
         };
 
         this.display = new ROT.Display(options);
+        if (!!document.body){
         document.body.appendChild(this.display.getContainer());
-
+        }
         this._generateMap();
 
         var scheduler = new ROT.Scheduler.Simple(); //this is just a fancy async/await engine that handles events for me.
@@ -33,7 +34,10 @@ var Game = {
         var freeCells = [];
 
         var digCallback = function (x, y, value) {
+            this.data[x+","+y] = value;
             if (value) {
+                
+                console.log("dig has run");
                 return;
             }
             var key = x + "," + y;
@@ -51,17 +55,17 @@ var Game = {
     //this is as simple as looping but I have to make a monster first.
     },
 
-    _createBeing: function (what, freeCells) {
+    _createBeing: function (being, freeCells) {
         var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
         var key = freeCells.splice(index, 1)[0];
         var parts = key.split(",");
         var x = parseInt(parts[0]);
         var y = parseInt(parts[1]);
-        return new what(x, y);
+        return new being(x, y);
     },
 
     _generateBoxes: function (freeCells) {
-        console.log('the map keys generated are:')
+        console.log('the map keys generated are:');
         for (var i = 2; i < 12; i++) {
             
             var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
@@ -69,7 +73,7 @@ var Game = {
             this.map[key] = [".", "*"];
             let address = key.toString().split(",");
             let roll = ROT.RNG.getPercentage();
-            console.log(`${key}`)
+            console.log(`${key}`);
             if (roll < 25) {
                 let loot = new Item(address[0], address[1], "sword", "weapon");
                 loot.announce();
@@ -110,27 +114,27 @@ var Player = function (x, y) {
     this._x = x;
     this._y = y;
     this._draw();
-}
+};
 
 Player.prototype.getSpeed = function () {
     return 100;
-}
+};
 Player.prototype.getX = function () {
     return this._x;
-}
+};
 Player.prototype.getY = function () {
     return this._y;
-}
+};
 
 Player.prototype.act = function () {
     Game.engine.lock();
     window.addEventListener("keydown", this);
-}
+};
 
 Player.prototype.handleEvent = function (e) {
     var code = e.keyCode;
     if (code == 13 || code == 32) {
-        console.log('getting item')
+        console.log('getting item');
         this._getItem();
         return;
     }
@@ -167,19 +171,26 @@ Player.prototype.handleEvent = function (e) {
     this._draw();
     window.removeEventListener("keydown", this);
     Game.engine.unlock();
-}
+};
 
 Player.prototype._draw = function () {
     Game.display.draw(this._x, this._y, "@", "#ff0");
     Game.display.drawText(2, 1, `I am at ${this._x} and ${this._y}`);
-    var fov =  new ROT.FOV.PreciseShadowcasting(this._getView)
-    var lightLevel = 3
+    function lightPasses(x, y) {
+        var key = x+","+y;
+        if (key in Game.data) { return (Game.data[key] == 0); }
+        return false;
+    }
+    var fov =  new ROT.FOV.PreciseShadowcasting(lightPasses);
+    console.log("fov = " +fov);
+    var lightLevel = 3;
     fov.compute(this._x, this._y, lightLevel, function(x, y, r, visibility) {
-        var ch = (r ? "" : "@");
-        var color = (Game.map[x+","+y] ? "#aa0": "#660");
+        var ch = (r ? "." : "@");
+        var color = (Game.data[x+","+y] ? "#aa0": "#660");
+        console.log("b game map is " + Game.data[x+","+y]);
         Game.display.draw(x, y, ch, "#fff", color);
     });
-}
+};
 Player.prototype._checkBox = function () {
     var key = this._x + "," + this._y;
     if (Game.map[key][1] != "*") {
@@ -195,30 +206,28 @@ Player.prototype._checkBox = function () {
 };
 Player.prototype._getItem = function () {
     var key = this._x + "," + this._y;
-    console.log(`my coordinates are ${this._x} and ${this._y}`)
+    console.log(`my coordinates are ${this._x} and ${this._y}`);
     if (Game.map[key][1] == "*") {
-        console.log('calling for item');
+        // console.log('calling for item');
         for (const item of itemArray) { 
-        console.log("checking for item...");
+        // console.log("checking for item...");
         if (item._x == this._x && item._y == this._y) {
-            console.log(`${item.name} found!`);
+            // console.log(`${item.name} found!`);
         playerInv.addItem(item);
-        console.log("you picked up the " + item.name);
-        console.log(`removing item from array\n
-        ${itemArray.length}`);
+        // console.log("you picked up the " + item.name);
+        // console.log(`removing item from array\n
+        // ${itemArray.length}`);
         itemArray = itemArray.filter(x => x !== item);
-        console.log(`removed item from array\n
-        ${itemArray.length}`);
+        // console.log(`removed item from array\n
+        // ${itemArray.length}`);
         }
     }
     }
-}
+};
 
 Player.prototype._getView = function (x, y) {
-    var key = x + "," + y;
-    if (key in Game.map) { return (Game.map[key] == 0); }
-    return false;
-}
+    
+};
 
 class Inventory {
     constructor(items = []) {
@@ -245,11 +254,11 @@ var Pedro = function (x, y) {
     this._x = x;
     this._y = y;
     this._draw();
-}
+};
 
 Pedro.prototype.getSpeed = function () {
     return 100;
-}
+};
 
 Pedro.prototype.act = function () {
     var x = Game.player.getX();
@@ -257,7 +266,7 @@ Pedro.prototype.act = function () {
 
     var passableCallback = function (x, y) {
         return (x + "," + y in Game.map);
-    }
+    };
     var astar = new ROT.Path.AStar(x, y, passableCallback, {
         topology: 4
     });
@@ -265,7 +274,7 @@ Pedro.prototype.act = function () {
     var path = [];
     var pathCallback = function (x, y) {
         path.push([x, y]);
-    }
+    };
     astar.compute(this._x, this._y, pathCallback);
 
     path.shift();
@@ -280,11 +289,11 @@ Pedro.prototype.act = function () {
         this._y = y;
         this._draw();
     }
-}
+};
 
 Pedro.prototype._draw = function () {
     Game.display.draw(this._x, this._y, "P", "red");
-}
+};
 
 class Item {
     constructor(x, y, name, type) {
@@ -298,27 +307,27 @@ class Item {
 
     }
     announce() {
-        console.log(`${this.name} spawned at ${this._x}, ${this._y} coordinates. It is a ${this.type}`)
+        console.log(`${this.name} spawned at ${this._x}, ${this._y} coordinates. It is a ${this.type}`);
     }
 }
 var playerInv = new Inventory([]);
 
 class Sword extends Item {
     constructor(x, y, name, type) {
-        super(x, y, name, type)
+        super(x, y, name, type);
         this.damageModifier = 3;
     }
 }
 
 class leatherArmor extends Item {
     constructor(x, y, name, type) {
-        super(x, y, name, type)
+        super(x, y, name, type);
         this.protection = 3;
     }
 }
 class healthPotion extends Item {
     constructor(x, y, name, type) {
-        super(x, y, name, type)
+        super(x, y, name, type);
         this.healing = 7;
     }
 }
@@ -332,4 +341,3 @@ class healthPotion extends Item {
     }
 } */
 
-Game.init();
