@@ -43,6 +43,7 @@ var Game = {
         digger.create(digCallback.bind(this));
 
         this._generateBoxes(freeCells); //creates the items.
+
         this._drawWholeMap();
 
         this.player = this._createBeing(Player, freeCells);
@@ -99,7 +100,9 @@ var Game = {
             var y = parseInt(parts[1]);
             this.display.draw(x, y, this.map[key]);
         }
-    }
+    },
+
+
 };
 
 var itemArray = [];
@@ -109,7 +112,7 @@ var Player = function (x, y) {
     this._draw();
 }
 
-    Player.prototype.getSpeed = function () {
+Player.prototype.getSpeed = function () {
     return 100;
 }
 Player.prototype.getX = function () {
@@ -168,7 +171,14 @@ Player.prototype.handleEvent = function (e) {
 
 Player.prototype._draw = function () {
     Game.display.draw(this._x, this._y, "@", "#ff0");
-    Game.display.drawText(2, 1, "")
+    Game.display.drawText(2, 1, `I am at ${this._x} and ${this._y}`);
+    var fov =  new ROT.FOV.PreciseShadowcasting(this._getView)
+    var lightLevel = 3
+    fov.compute(this._x, this._y, lightLevel, function(x, y, r, visibility) {
+        var ch = (r ? "" : "@");
+        var color = (Game.map[x+","+y] ? "#aa0": "#660");
+        Game.display.draw(x, y, ch, "#fff", color);
+    });
 }
 Player.prototype._checkBox = function () {
     var key = this._x + "," + this._y;
@@ -203,6 +213,13 @@ Player.prototype._getItem = function () {
     }
     }
 }
+
+Player.prototype._getView = function (x, y) {
+    var key = x + "," + y;
+    if (key in Game.map) { return (Game.map[key] == 0); }
+    return false;
+}
+
 class Inventory {
     constructor(items = []) {
         this.items = items;
