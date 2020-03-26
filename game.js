@@ -36,8 +36,6 @@ var Game = {
         var digCallback = function (x, y, value) {
             this.data[x+","+y] = value;
             if (value) {
-                
-                console.log("dig has run");
                 return;
             }
             var key = x + "," + y;
@@ -65,7 +63,7 @@ var Game = {
     },
 
     _generateBoxes: function (freeCells) {
-        console.log('the map keys generated are:');
+       //console.log("the map keys generated are:");
         for (var i = 2; i < 12; i++) {
             
             var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
@@ -73,7 +71,7 @@ var Game = {
             this.map[key] = [".", "*"];
             let address = key.toString().split(",");
             let roll = ROT.RNG.getPercentage();
-            console.log(`${key}`);
+           // console.log(`${key}`);
             if (roll < 25) {
                 let loot = new Item(address[0], address[1], "sword", "weapon");
                 loot.announce();
@@ -176,7 +174,7 @@ Player.prototype.handleEvent = function (e) {
 
 Player.prototype._draw = function () {
     Game.display.draw(this._x, this._y, "@", "#ff0");
-    Game.display.drawText(2, 1, `I am at ${this._x} and ${this._y}`);
+    posConsole.write(`I am at ${this._x} and ${this._y}`)
     function lightPasses(x, y) {
         var key = x+","+y;
         if (key in Game.data) { return (Game.data[key] == 0); }
@@ -188,7 +186,7 @@ Player.prototype._draw = function () {
         var key = x+","+y;
         var ch = (r ? Game.map[key] : "@");
         var color = (Game.data[x+","+y] ? "#556": "#aa0");
-        console.log("b game map is " + Game.data[x+","+y]);
+        //console.log("b game map is " + Game.data[x+","+y]);
         //TODO: hold floor tiles and show them here
         Game.display.draw(x, y, ch, "#fff", color);
     });
@@ -309,7 +307,7 @@ class Item {
 
     }
     announce() {
-        console.log(`${this.name} spawned at ${this._x}, ${this._y} coordinates. It is a ${this.type}`);
+        //console.log(`${this.name} spawned at ${this._x}, ${this._y} coordinates. It is a ${this.type}`);
     }
 }
 var playerInv = new Inventory([]);
@@ -333,6 +331,19 @@ class healthPotion extends Item {
         this.healing = 7;
     }
 }
+
+class console {
+    constructor (x,y) {
+        this._x = x;
+        this._y = y;
+    }
+    write(message) {
+            Game.display.drawText(this._x, this._y, message);
+        }
+}
+var fightConsole = new console(1,1);
+var posConsole = new console(2,1);
+var itemConsole = new console(3,1);
 
 /*function backgroundGet(x, y, string) {
     key = this.x + "," + this.y;
