@@ -160,7 +160,15 @@ Player.prototype.handleEvent = function (e) {
     if (!(newKey in Game.map)) {
         return;
     }
-
+    if (newkey in Monster) {
+    // roll 1d20, if attack >= monster defence do damage. add buffs from weapon. 
+    // roll damage, calling the damage dice on the weapon.
+    // subtract damage from monster hp
+    // if monster hp <1, Monster.Die()
+    // if monster hp >1, Monster attacks, same rules as player. .attack().
+    //TODO: build monster object, build monster map object, make monsters update map. give player attack method. give monster attack method
+    //TODO continued: give weapons damage dice. 
+    }
     // TODO: add attack logic. (if enemy on cell, do attack.)
 
     Game.display.draw(this._x, this._y, Game.map[this._x + "," + this._y], "#fff", "#000");
